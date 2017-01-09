@@ -1,4 +1,229 @@
-﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}AddAffiliate]') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+/******* Vendors table creation ******/
+
+USE [Database_Name]
+GO
+
+/****** Object:  Table [dbo].[Vendors]    Script Date: 9-1-2017 09:49:19 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Vendors](
+	[VendorId] [int] IDENTITY(1,1) NOT NULL,
+	[VendorName] [nvarchar](50) NOT NULL,
+	[Street] [nvarchar](50) NULL,
+	[City] [nvarchar](50) NULL,
+	[Region] [nvarchar](50) NULL,
+	[Country] [nvarchar](50) NULL,
+	[PostalCode] [nvarchar](50) NULL,
+	[Telephone] [nvarchar](50) NULL,
+	[PortalId] [int] NULL,
+	[Fax] [nvarchar](50) NULL,
+	[Email] [nvarchar](50) NULL,
+	[Website] [nvarchar](100) NULL,
+	[ClickThroughs] [int] NOT NULL,
+	[Views] [int] NOT NULL,
+	[CreatedByUser] [nvarchar](100) NULL,
+	[CreatedDate] [datetime] NULL,
+	[LogoFile] [nvarchar](100) NULL,
+	[KeyWords] [ntext] NULL,
+	[Unit] [nvarchar](50) NULL,
+	[Authorized] [bit] NOT NULL,
+	[FirstName] [nvarchar](50) NULL,
+	[LastName] [nvarchar](50) NULL,
+	[Cell] [varchar](50) NULL,
+ CONSTRAINT [PK_Vendor] PRIMARY KEY CLUSTERED 
+(
+	[VendorId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [IX_Vendors] UNIQUE NONCLUSTERED 
+(
+	[PortalId] ASC,
+	[VendorName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Vendors] ADD  CONSTRAINT [DF_Vendors_ClickThroughs]  DEFAULT ((0)) FOR [ClickThroughs]
+GO
+
+ALTER TABLE [dbo].[Vendors] ADD  CONSTRAINT [DF_Vendors_Views]  DEFAULT ((0)) FOR [Views]
+GO
+
+ALTER TABLE [dbo].[Vendors] ADD  CONSTRAINT [DF_Vendors_Authorized]  DEFAULT ((1)) FOR [Authorized]
+GO
+
+ALTER TABLE [dbo].[Vendors]  WITH CHECK ADD  CONSTRAINT [FK_Vendor_Portals] FOREIGN KEY([PortalId])
+REFERENCES [dbo].[Portals] ([PortalID])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Vendors] CHECK CONSTRAINT [FK_Vendor_Portals]
+GO
+
+
+
+
+/******* Banners table creation ******/
+
+
+USE [Database_Name]
+GO
+
+/****** Object:  Table [dbo].[Banners]    Script Date: 9-1-2017 09:47:29 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Banners](
+	[BannerId] [int] IDENTITY(1,1) NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[ImageFile] [nvarchar](100) NULL,
+	[BannerName] [nvarchar](100) NOT NULL,
+	[Impressions] [int] NOT NULL,
+	[CPM] [float] NOT NULL,
+	[Views] [int] NOT NULL,
+	[ClickThroughs] [int] NOT NULL,
+	[StartDate] [datetime] NULL,
+	[EndDate] [datetime] NULL,
+	[CreatedByUser] [nvarchar](100) NOT NULL,
+	[CreatedDate] [datetime] NOT NULL,
+	[BannerTypeId] [int] NULL,
+	[Description] [nvarchar](2000) NULL,
+	[GroupName] [nvarchar](100) NULL,
+	[Criteria] [bit] NOT NULL,
+	[URL] [nvarchar](255) NULL,
+	[Width] [int] NOT NULL,
+	[Height] [int] NOT NULL,
+ CONSTRAINT [PK_Banner] PRIMARY KEY CLUSTERED 
+(
+	[BannerId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Banners] ADD  CONSTRAINT [DF_Banners_Views]  DEFAULT ((0)) FOR [Views]
+GO
+
+ALTER TABLE [dbo].[Banners] ADD  CONSTRAINT [DF_Banners_ClickThroughs]  DEFAULT ((0)) FOR [ClickThroughs]
+GO
+
+ALTER TABLE [dbo].[Banners] ADD  CONSTRAINT [DF_Banners_Criteria]  DEFAULT ((1)) FOR [Criteria]
+GO
+
+ALTER TABLE [dbo].[Banners] ADD  CONSTRAINT [DF_Banners_Width]  DEFAULT ((0)) FOR [Width]
+GO
+
+ALTER TABLE [dbo].[Banners] ADD  CONSTRAINT [DF_Banners_Height]  DEFAULT ((0)) FOR [Height]
+GO
+
+ALTER TABLE [dbo].[Banners]  WITH CHECK ADD  CONSTRAINT [FK_Banner_Vendor] FOREIGN KEY([VendorId])
+REFERENCES [dbo].[Vendors] ([VendorId])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Banners] CHECK CONSTRAINT [FK_Banner_Vendor]
+GO
+
+
+
+/******* Classification table creation ******/
+
+
+
+USE [Database_Name]
+GO
+
+/****** Object:  Table [dbo].[Classification]    Script Date: 9-1-2017 09:47:48 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Classification](
+	[ClassificationId] [int] IDENTITY(1,1) NOT NULL,
+	[ClassificationName] [nvarchar](200) NOT NULL,
+	[ParentId] [int] NULL,
+ CONSTRAINT [PK_VendorCategory] PRIMARY KEY CLUSTERED 
+(
+	[ClassificationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Classification]  WITH CHECK ADD  CONSTRAINT [FK_Classification_Classification] FOREIGN KEY([ParentId])
+REFERENCES [dbo].[Classification] ([ClassificationId])
+GO
+
+ALTER TABLE [dbo].[Classification] CHECK CONSTRAINT [FK_Classification_Classification]
+GO
+
+
+
+
+
+/******* VendorClassification table creation ******/
+
+
+USE [Database_Name]
+GO
+
+/****** Object:  Table [dbo].[VendorClassification]    Script Date: 9-1-2017 09:48:11 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[VendorClassification](
+	[VendorClassificationId] [int] IDENTITY(1,1) NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[ClassificationId] [int] NOT NULL,
+ CONSTRAINT [PK_VendorClassification] PRIMARY KEY CLUSTERED 
+(
+	[VendorClassificationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [IX_VendorClassification] UNIQUE NONCLUSTERED 
+(
+	[VendorId] ASC,
+	[ClassificationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[VendorClassification]  WITH CHECK ADD  CONSTRAINT [FK_VendorClassification_Classification] FOREIGN KEY([ClassificationId])
+REFERENCES [dbo].[Classification] ([ClassificationId])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[VendorClassification] CHECK CONSTRAINT [FK_VendorClassification_Classification]
+GO
+
+ALTER TABLE [dbo].[VendorClassification]  WITH CHECK ADD  CONSTRAINT [FK_VendorClassification_Vendors] FOREIGN KEY([VendorId])
+REFERENCES [dbo].[Vendors] ([VendorId])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[VendorClassification] CHECK CONSTRAINT [FK_VendorClassification_Vendors]
+GO
+
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}AddAffiliate]') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
   DROP PROCEDURE {databaseOwner}{objectQualifier}AddAffiliate
 GO
 
